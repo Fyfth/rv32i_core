@@ -1,0 +1,44 @@
+no predict v.s. local predict 
+
+addi x1, x0, 0      # x1 = 0 (counter)
+addi x2, x0, 20      # x2 = 20 (limit)
+addi x1, x1, 1      # x1++ (loop body) ← loop starts here at 0x08
+bne  x1, x2, -4     # if x1 != x2, branch back to 0x08
+addi x3, x2, 99     # x3 = 119 (after loop)
+00000093
+01400113
+00108093
+fe209ee3
+06310193
+00000000
+
+
+local predict v.s. tage 
+
+int x = 0;
+int y = 0;
+for (int i = 0; i < 20; i++) {
+    // Branch A: Even check
+    if (i % 2 != 0) {
+        x++; // Only happens on odd iterations
+    }
+    // Branch B: Odd check
+    if (i % 2 == 0) {
+        y++; // Only happens on even iterations
+    }
+}
+
+# Two branches where B outcome depends on A
+addi x1, x0, 0     # counter
+addi x2, x0, 20    # limit
+addi x3, x0, 0     # x
+addi x4, x0, 0     # y
+
+# loop at 0x10
+andi x5, x1, 1     # x5 = i%2
+beq  x5, x0, 8    # branch A: if even skip
+addi x3, x3, 1    # x++ (odd iterations)
+bne  x5, x0, 8    # branch B: if odd skip  
+addi x4, x4, 1    # y++ (even iterations)
+addi x1, x1, 1    # i++
+bne  x1, x2, -24  # loop back

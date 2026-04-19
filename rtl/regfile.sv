@@ -15,6 +15,7 @@ module regfile(
 
     assign rd2 = (rs2 == 5'b0) ? 32'b0 : (((rs2 == rd) && we) ? wd : regs[rs2]);
 
+    //write
     always_ff @(posedge clk) begin 
         if(we && rd!=5'b0)
             regs[rd]<=wd; 
