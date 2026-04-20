@@ -172,7 +172,9 @@ module core(
         end
     end
 
-    assign mispredict = (id_ex_branch != 2'b00) && (branch_taken != id_ex_predicted_taken);
+    assign mispredict = (id_ex_branch != 2'b00) && 
+                    ((branch_taken != id_ex_predicted_taken) ||
+                     (branch_taken && (branch_target != id_ex_predicted_target)));
     assign mispredict_target = branch_taken ? branch_target : (id_ex_pc + 32'd4);
     //if predict doens't match, actual 
 

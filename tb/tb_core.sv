@@ -20,12 +20,12 @@ module tb_core;
 
         // run enough cycles for all instructions to complete
         // 5 instructions + 4 pipeline stages + some extra
-        repeat(190) @(posedge clk);
+        repeat(814) @(posedge clk);
 
-        $display("x1 = %0d (expect 20)",  dut.regfile_unit.regs[1]);
-        $display("x2 = %0d (expect 20)",  dut.regfile_unit.regs[2]);
-        $display("x3 = %0d (expect 119)",  dut.regfile_unit.regs[3]);
-        $display("x4 = %0d (expect 0)", dut.regfile_unit.regs[4]);
+        $display("x1 = %0d (expect 100)",  dut.regfile_unit.regs[1]);
+        $display("x2 = %0d (expect 100)",  dut.regfile_unit.regs[2]);
+        $display("x3 = %0d (expect 50)",  dut.regfile_unit.regs[3]);
+        $display("x4 = %0d (expect 50)", dut.regfile_unit.regs[4]);
         
         $finish;
     end
@@ -68,6 +68,25 @@ module tb_core;
                 $time,
                 dut.predict_taken,
                 dut.predict_target);
+            $display("%4t | GHR=%b | t1_hit=%b | t2_hit=%b | predict=%b | mispredict=%b",
+                $time,
+                dut.bpu_unit.GHR,
+                dut.bpu_unit.t1_hit,
+                dut.bpu_unit.t2_hit,
+                dut.predict_taken,
+                dut.mispredict);
+            $display("%4t | t1_hit=%b | t2_hit=%b | predict=%b | actual=%b | mispredict=%b",
+                $time,
+                dut.bpu_unit.t1_hit,
+                dut.bpu_unit.t2_hit,
+                dut.predict_taken,
+                dut.branch_taken,
+                dut.mispredict);
+            $display("%4t | id_ex_predicted_taken=%b | branch_taken=%b | mispredict=%b",
+                $time,
+                dut.id_ex_predicted_taken,
+                dut.branch_taken,
+                dut.mispredict);
         end
     end
     initial begin
